@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Minecraft</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #game {
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        #world {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-template-rows: repeat(10, 50px);
+            gap: 1px;
+        }
+
+        .block {
+            width: 50px;
+            height: 50px;
+            background-color: lightgreen;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .character {
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>2D Minecraft</h1>
+    <div id="game">
+        <div id="world"></div>
+        <div id="inventory">
+            <button id="placeBlock">Place Block</button>
+            <button id="removeBlock">Remove Block</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const world = document.getElementById('world');
+            const placeBlockButton = document.getElementById('placeBlock');
+            const removeBlockButton = document.getElementById('removeBlock');
+            const worldSize = 10;
+            const blocks = [];
+
+            // Initialize the world grid
+            for (let i = 0; i < worldSize; i++) {
+                for (let j = 0; j < worldSize; j++) {
+                    const block = document.createElement('div');
+                    block.className = 'block';
+                    block.dataset.row = i;
+                    block.dataset.col = j;
+                    blocks.push(block);
+                    world.appendChild(block);
+                }
+            }
+
+            // Place the character in the middle of the grid
+            const character = document.createElement('div');
+            character.className = 'block character';
+            let characterPosition = { row: Math.floor(worldSize / 2), col: Math.floor(worldSize / 2) };
+            updateCharacterPosition();
+
+            document.addEventListener('keydown', (e) => {
+                switch (e.key) {
+                    case 'ArrowUp':
+                        if (characterPosition.row > 0) characterPosition.row--;
+                        break;
+                    case 'ArrowDown':
+                        if (characterPosition.row < worldSize - 1) characterPosition.row++;
+                        break;
+                    case 'ArrowLeft':
+                        if (characterPosition.col > 0) characterPosition.col--;
+                        break;
+                    case 'ArrowRight':
+                        if (characterPosition.col < worldSize - 1) characterPosition.col++;
+                        break;
+                }
+                updateCharacterPosition();
+            });
+
+            function updateCharacterPosition() {
+                blocks.forEach(block => block.classList.remove('character'));
+                const index = characterPosition.row * worldSize + characterPosition.col;
+                blocks[index].classList.add('character');
+            }
+
+            placeBlockButton.addEventListener('click', () => {
+                const index = characterPosition.row * worldSize + characterPosition.col;
+                blocks[index].style.backgroundColor = 'brown';
+            });
+
+            removeBlockButton.addEventListener('click', () => {
+                const index = characterPosition.row * worldSize + characterPosition.col;
+                blocks[index].style.backgroundColor = 'lightgreen';
+            });
+        });
+    </script>
+</body>
+</html>
